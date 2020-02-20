@@ -1,8 +1,9 @@
 name: image
 
-on:
-  schedule:
-    - cron: '0 0 * * *'
+# on:
+#   schedule:
+#     - cron: '0 0 * * *'
+on: [push]
 
 env:
   REPO: argoproj/argo-cd
@@ -32,6 +33,7 @@ jobs:
           | jq -crM '.results[].name'
           | grep -q ${{ steps.recent-tag.outputs.tag }}
           || docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
+          && sed -i -e 's/${PACKR_CMD}/GOARCH=arm GOARM=7 CC=arm-linux-gnueabi-gcc ${PACKR_CMD}/g' Makefile
           && IMAGE_TAG=${{ steps.recent-tag.outputs.tag }} make image
           && docker tag ${IMAGE}:${{ steps.recent-tag.outputs.tag }} ${IMAGE}:latest
           && docker push ${IMAGE}:latest
