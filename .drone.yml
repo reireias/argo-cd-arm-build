@@ -1,0 +1,14 @@
+kind: pipeline
+type: docker
+name: main
+
+platform:
+  arch: arm
+  os: linux
+
+steps:
+  - name: debug
+    image: alpine/git
+    commands:
+      - tag=$(curl -s https://api.github.com/repos/${REPO}/tags | jq -crM 'map(select(.name | startswith("v")))[0].name')
+      - echo $tag
