@@ -12,3 +12,4 @@ steps:
     commands:
       - tag=$(curl -s https://api.github.com/repos/${REPO}/tags | jq -crM 'map(select(.name | startswith("v")))[0].name')
       - echo $tag
+
