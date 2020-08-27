@@ -26,16 +26,19 @@ steps:
         | grep -q $tag
         || git clone https://github.com/argoproj/argo-cd.git -b $tag
         && cd argo-cd
-        && docker login -u $USERNAME -p $PASSWORD
-        && docker build -t reireias/argocd:$tag --build-arg BUILD_ALL_CLIS="false" .
-        && docker tag reireias/argocd:$tag reireias/argocd:latest
-        && docker push reireias/argocd:$tag
-        && docker push reireias/argocd:latest
-    volumes:
-      - name: dockersock
-        path: /var/run/docker.sock
-
-volumes:
-  - name: dockersock
-    host:
-      path: /var/run/docker.sock
+        # && docker login -u $USERNAME -p $PASSWORD
+        # && docker build -t reireias/argocd:$tag --build-arg BUILD_ALL_CLIS="false" .
+        # && docker tag reireias/argocd:$tag reireias/argocd:latest
+        # && docker push reireias/argocd:$tag
+        # && docker push reireias/argocd:latest
+  - name: debug2
+    image: plugin/docker
+    settings:
+      repo: reireias/argocd
+      tags: latest
+      build_args:
+        - BUILD_ALL_CLIS="false"
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
