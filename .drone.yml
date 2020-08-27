@@ -20,12 +20,12 @@ steps:
       - sha=$(curl -s https://api.github.com/repos/argoproj/argo-cd/tags | jq -crM 'map(select(.name | startswith("v")))[0].commit.sha')
       - echo $tag
       - echo $sha
-      - rm -r ./*
       - >
         curl -s https://registry.hub.docker.com/v2/repositories/reireias/argocd/tags/
         | jq -crM '.results[].name'
         | grep -q $tag
-        || git clone https://github.com/argoproj/argo-cd.git -b $tag .
+        || git clone https://github.com/argoproj/argo-cd.git -b $tag
+        && mv -v argo-cd/* ./
         # && docker login -u $USERNAME -p $PASSWORD
         # && docker build -t reireias/argocd:$tag --build-arg BUILD_ALL_CLIS="false" .
         # && docker tag reireias/argocd:$tag reireias/argocd:latest
