@@ -9,6 +9,11 @@ platform:
 steps:
   - name: debug
     image: plugins/docker
+    environment:
+      USERNAME:
+        from_secret: docker_username
+      PASSWORD:
+        from_secret: docker_password
     commands:
       - apk add curl jq git
       - tag=$(curl -s https://api.github.com/repos/argoproj/argo-cd/tags | jq -crM 'map(select(.name | startswith("v")))[0].name')
@@ -20,3 +25,5 @@ steps:
         | jq -crM '.results[].name'
         | grep -q $tag
         || git clone https://github.com/argoproj/argo-cd.git -b $tag
+        && cd argo-cd
+        && docker login -u $USERNAME -p $PASSWORD
