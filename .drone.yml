@@ -32,7 +32,7 @@ steps:
         # && docker push reireias/argocd:$tag
         # && docker push reireias/argocd:latest
   - name: debug2
-    image: plugin/docker
+    image: plugins/docker
     settings:
       repo: reireias/argocd
       tags: latest
