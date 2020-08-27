@@ -7,7 +7,7 @@ platform:
   os: linux
 
 steps:
-  - name: debug
+  - name: clone argo-cd
     image: docker
     commands:
       - apk add curl jq git
@@ -16,15 +16,18 @@ steps:
       - sha=$(curl -s https://api.github.com/repos/argoproj/argo-cd/tags | jq -crM 'map(select(.name | startswith("v")))[0].commit.sha')
       - echo $tag
       - echo $sha
-      - >
-        curl -s https://registry.hub.docker.com/v2/repositories/reireias/argocd/tags/
-        | jq -crM '.results[].name'
-        | grep -q $tag
-        || git clone https://github.com/argoproj/argo-cd.git -b $tag
-        && mv -v argo-cd/* ./
-        && mv -v argo-cd/.[!.]* ./
-        && echo -n "latest,$tag" > .tags
-  - name: debug2
+      - result=$(curl -s https://registry.hub.docker.com/v2/repositories/reireias/argocd/tags/ | jq -crM '.results[].name' | grep -q $tag; true)
+      - |
+        if [ -z "$result" ]; then
+          git clone https://github.com/argoproj/argo-cd.git -b $tag
+          mv -v argo-cd/* ./
+          mv -v argo-cd/.[!.]* ./
+          echo -n "latest,$tag" > .tags
+        else
+          # exit pipeline
+          exit 78
+        fi
+  - name: image build
     image: plugins/docker
     settings:
       repo: reireias/argocd
