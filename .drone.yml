@@ -11,6 +11,7 @@ steps:
     image: docker
     commands:
       - apk add curl jq git
+      - rm -rf .git
       - tag=$(curl -s https://api.github.com/repos/argoproj/argo-cd/tags | jq -crM 'map(select(.name | startswith("v")))[0].name')
       - sha=$(curl -s https://api.github.com/repos/argoproj/argo-cd/tags | jq -crM 'map(select(.name | startswith("v")))[0].commit.sha')
       - echo $tag
