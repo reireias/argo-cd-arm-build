@@ -27,3 +27,7 @@ steps:
         || git clone https://github.com/argoproj/argo-cd.git -b $tag
         && cd argo-cd
         && docker login -u $USERNAME -p $PASSWORD
+        && make armimage
+        && docker tag reireias/argocd:$tag reireias/argocd:latest
+        && docker push reireias/argocd:$tag
+        && docker push reireias/argocd:latest
