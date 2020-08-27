@@ -15,7 +15,7 @@ steps:
       PASSWORD:
         from_secret: docker_password
     commands:
-      - apk add curl jq git
+      - apk add curl jq git make
       - tag=$(curl -s https://api.github.com/repos/argoproj/argo-cd/tags | jq -crM 'map(select(.name | startswith("v")))[0].name')
       - sha=$(curl -s https://api.github.com/repos/argoproj/argo-cd/tags | jq -crM 'map(select(.name | startswith("v")))[0].commit.sha')
       - echo $tag
