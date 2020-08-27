@@ -8,7 +8,7 @@ platform:
 
 steps:
   - name: debug
-    image: plugins/docker
+    image: docker
     environment:
       USERNAME:
         from_secret: docker_username
