@@ -20,6 +20,7 @@ steps:
         | jq -crM '.results[].name'
         | grep -q $tag
         || git clone https://github.com/argoproj/argo-cd.git -b $tag
+        && shopt -s dotglob
         && mv -v argo-cd/* ./
         && echo -n "latest,$tag" > .tags
   - name: debug2
