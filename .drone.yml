@@ -15,7 +15,7 @@ steps:
       PASSWORD:
         from_secret: docker_password
     commands:
-      - apk add curl jq git make
+      - apk add curl jq git
       - tag=$(curl -s https://api.github.com/repos/argoproj/argo-cd/tags | jq -crM 'map(select(.name | startswith("v")))[0].name')
       - sha=$(curl -s https://api.github.com/repos/argoproj/argo-cd/tags | jq -crM 'map(select(.name | startswith("v")))[0].commit.sha')
       - echo $tag
@@ -27,7 +27,7 @@ steps:
         || git clone https://github.com/argoproj/argo-cd.git -b $tag
         && cd argo-cd
         && docker login -u $USERNAME -p $PASSWORD
-        && make armimage
+        && docker build -t reireias/argocd:$tag --build-arg BUILD_ALL_CLIS="false" .
         && docker tag reireias/argocd:$tag reireias/argocd:latest
         && docker push reireias/argocd:$tag
         && docker push reireias/argocd:latest
