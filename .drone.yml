@@ -31,3 +31,6 @@ steps:
         && docker tag reireias/argocd:$tag reireias/argocd:latest
         && docker push reireias/argocd:$tag
         && docker push reireias/argocd:latest
+    volumes:
+      - name: docker
+        path: /var/run/docker.sock
